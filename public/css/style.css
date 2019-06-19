@@ -1,0 +1,38 @@
+.gpBorder {
+	border: 2px solid black;
+}
+
+.gpHeight {
+	min-height: 400px;
+	max-height: 800px;
+}
+
+.userPhotoSize {
+	height: 80px;
+	width: 80px;
+}
+
+.divSpace {
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+#allChatTexts {
+	overflow: auto;
+}
+
+input {
+	margin-top: 30px;
+	height: 40px;
+	width: 600px;
+}
+
+.mborder {
+    padding: 10px;
+}
+
+.messBorder {
+    border: 2px solid black;
+    padding: 10px;
+    background-color: lightgrey
+}

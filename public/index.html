@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="css/style.css">
+
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
@@ -23,8 +25,24 @@
     <div class="container">
         <div class="jumbotron text-center">
             <h1>CHATTY</h1>
+            <h3>Sign in to Chat with Classmates</h3>
             <button id="signIn" onclick="googleSignIn()" class="btn btn-primary">Sign In</button>
-            <button id="signIn" onclick="googleSignOut()" class="btn btn-danger">Sign Out</button>
+            <button id="signOut" onclick="googleSignOut()" class="btn btn-danger" style="display: none">Sign Out</button>
+
+        </div>
+
+        <div id="chatBox1" style="display: none">
+            <div class="row  ">
+                <div id="allChatTexts" class="col-md-12 gpBorder gpHeight ">
+
+                </div>
+
+
+            </div>
+            <div class="offset-md-2 col-md-8">
+                <input id="userMessage" type="text">
+                <button id="submit" class="btn btn-primary">Submit</button>
+            </div>
 
         </div>
     </div>
