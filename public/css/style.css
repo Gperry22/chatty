@@ -1,15 +1,23 @@
 .gpBorder {
-	border: 2px solid black;
+	border: 1px solid black;
+	/* border-radius: 15px 15px 0px 0px; */
 }
+
+
 
 .gpHeight {
 	min-height: 400px;
-	max-height: 800px;
+	max-height: 500px;
 }
 
 .userPhotoSize {
 	height: 80px;
 	width: 80px;
+	border-radius: 50%;
+}
+
+.photoMarginRight {
+	margin-right: 15px;
 }
 
 .divSpace {
@@ -20,19 +28,59 @@
 #allChatTexts {
 	overflow: auto;
 }
-
+.rowPos {
+	position: relative;
+}
 input {
-	margin-top: 30px;
-	height: 40px;
-	width: 600px;
+	height: 50px;
+	border: 1px solid;
+	border-color: lightgrey;
+	border-radius: 15px 0px 0px 15px
+
+}
+
+.bottomInputBorder {
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-radius: 0px 0px 15px 15px;
+	background-color: lightgrey;
+	padding: 5px
+
+}
+
+.topInputBorder {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-radius: 15px 15px 0px 0px;
+	background-color: lightgrey;
+	height: 50px;
+	padding: 5px
+
+}
+
+.subBTN {
+	height: 48px;
+	position: absolute;
+	right: 0px;
+	bottom: 1px;
+	border-radius: 0px 15px 15px 0px;
+
 }
 
 .mborder {
-    padding: 10px;
+	padding: 10px;
+	border-bottom: 1px gray solid;
 }
 
 .messBorder {
     border: 2px solid black;
     padding: 10px;
     background-color: lightgrey
+}
+
+.chatFont{
+	font-weight: bold;
+	font-style: italic;
 }

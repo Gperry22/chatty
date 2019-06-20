@@ -27,22 +27,50 @@
             <h1>CHATTY</h1>
             <h3>Sign in to Chat with Classmates</h3>
             <button id="signIn" onclick="googleSignIn()" class="btn btn-primary">Sign In</button>
-            <button id="signOut" onclick="googleSignOut()" class="btn btn-danger" style="display: none">Sign Out</button>
+            <button id="signOut" onclick="googleSignOut()" class="btn btn-danger" style="display: none">Sign
+                Out</button>
 
         </div>
 
         <div id="chatBox1" style="display: none">
-            <div class="row  ">
-                <div id="allChatTexts" class="col-md-12 gpBorder gpHeight ">
+            <div class="row">
+                <div class="offset-md-1 col-md-6">
+                    <div class="col-md-12 topInputBorder">
+                        <h3>Main Chat:</h3>
+                    </div>
+
+                    <div id="allChatTexts" class="col-md-12 gpBorder gpHeight ">
+                    </div>
+
+                    <div class="col-md-12 bottomInputBorder">
+                        <div class="row rowPos text-center">
+                            <div class=" offset-md-1 col-md-8 ">
+                                <input id="userMessage" class="input-group input-group-lg" type="text"
+                                    placeholder="Enter a Message 200 Characters or Less">
+                            </div>
+                            <div class="col-md-1">
+                                <button id="submit" class="btn btn-primary subBTN">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-12 topInputBorder">
+                        <h3>Who's Online:</h3>
+                    </div>
+
+                    <div id="usersOnline" class="col-md-12 gpBorder gpHeight ">
+                    </div>
+
+                    <div class="col-md-12 bottomInputBorder">
+                    </div>
 
                 </div>
 
 
             </div>
-            <div class="offset-md-2 col-md-8">
-                <input id="userMessage" type="text">
-                <button id="submit" class="btn btn-primary">Submit</button>
-            </div>
+
 
         </div>
     </div>
