@@ -16,6 +16,8 @@
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.js"></script>
+
 
 
 </head>
@@ -34,7 +36,7 @@
 
         <div id="chatBox1" style="display: none">
             <div class="row">
-                <div class="offset-md-1 col-md-6">
+                <div class="col-md-8">
                     <div class="col-md-12 topInputBorder">
                         <h3>Main Chat:</h3>
                     </div>
@@ -44,7 +46,7 @@
 
                     <div class="col-md-12 bottomInputBorder">
                         <div class="row rowPos text-center">
-                            <div class=" offset-md-1 col-md-8 ">
+                            <div class=" offset-md-1 col-md-9 ">
                                 <input id="userMessage" class="input-group input-group-lg" type="text"
                                     placeholder="Enter a Message 200 Characters or Less">
                             </div>
@@ -56,8 +58,8 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="col-md-12 topInputBorder">
-                        <h3>Who's Online:</h3>
+                    <div class="col-md-12 topInputBorder text-center">
+                        <h3><span id="usersOnlineSpan"></span> User(s) Online:</h3>
                     </div>
 
                     <div id="usersOnline" class="col-md-12 gpBorder gpHeight ">

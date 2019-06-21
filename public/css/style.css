@@ -16,6 +16,13 @@
 	border-radius: 50%;
 }
 
+.userOnlinePhotoSize {
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
+
+
 .photoMarginRight {
 	margin-right: 15px;
 }
@@ -81,6 +88,11 @@ input {
 }
 
 .chatFont{
-	font-weight: bold;
+	/* font-weight: bold; */
 	font-style: italic;
+}
+
+.timeFormat{
+	font-style: italic;
+	font-size: 12px;
 }

@@ -13,26 +13,29 @@ firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database();
 var provider = new firebase.auth.GoogleAuthProvider();
-var userToken = notLoggedInMessage()
+var userToken = sessionStorage.getItem("userToken")
 var dbListOfUserNames = [];
+var dbListOfUsersConnected = [];
+var connectionsRef = firebase.database().ref("/connections");
+var connectedRef = firebase.database().ref(".info/connected");
+var con;
 
 
 isUserLoggedIn()
 
 
 function isUserLoggedIn() {
-   var userNotLoggedIn = notLoggedInMessage()
-   if (userToken === userNotLoggedIn) {
+   if (userToken === null) {
       $("#chatBox1").css("display", "none")
-      console.log(userToken);
       showSignIn()
       hideSignOut()
    }
    else if (userToken) {
       $("#chatBox1").css("display", "")
-      console.log(userToken);
+      pushFBEntireDBValue()
       hideSignIn()
       showSignOut()
+      showUserAsLoggedOn()
    }
 }
 
@@ -42,10 +45,7 @@ function googleSignIn() {
    firebase.auth()
       .signInWithPopup(provider).then(function (result) {
          var token = result.credential.accessToken;
-         console.log(token)
-
          var user = result.user;
-         console.log(user)
 
          var userToSave = {
             name: user.displayName,
@@ -53,13 +53,10 @@ function googleSignIn() {
             photo: user.photoURL,
             token: token
          }
-         console.log(userToSave);
 
          isUserSignedUpAlready(userToSave, token)
 
       }).catch(function (error) {
-         var errorCode = error.code;
-         var errorMessage = error.message;
          console.log(error.code)
          console.log(error.message)
       });
@@ -68,7 +65,6 @@ function googleSignIn() {
 function googleSignOut() {
    firebase.auth().signOut()
       .then(function () {
-         console.log('Signout Successful')
          clearSessionStorageAndToken()
       }, function (error) {
          console.log('Signout Failed')
@@ -77,22 +73,18 @@ function googleSignOut() {
 
 //*******************CHECKING TO SEE IF USER IS ALREADY SIGNED UP************************/
 
-function isUserSignedUpAlready(userToSave, token) {
+function isUserSignedUpAlready(userToSave) {
    database.ref("/users").on("value", function (snapshot) {
-      console.log(snapshot.val());
       if (snapshot.val()) {
          var dbSnapShot = snapshot.val()
 
          var dbListOfUserEmails = [];
          var entries = Object.entries(dbSnapShot)
-         console.log(entries);
 
          for (var i = 0; i < entries.length; i++) {
             dbListOfUserEmails.push(entries[i][1].email)
             dbListOfUserEmails.push(entries[i][1].name)
          }
-         console.log(dbListOfUserEmails);
-
 
          if (dbListOfUserEmails.indexOf(userToSave.email) === -1) {
             console.log("Saving new User");
@@ -121,10 +113,11 @@ function saveUser(userToSave) {
 }
 
 function saveToken(userToSave) {
-   sessionStorage.setItem("user", userToSave.name)
-   sessionStorage.setItem("userToken", userToSave.token)
-   sessionStorage.setItem("userPhoto", userToSave.photo)
-   userToken = sessionStorage.getItem("userToken")
+   sessionStorage.setItem("user", userToSave.name);
+   sessionStorage.setItem("userToken", userToSave.token);
+   sessionStorage.setItem("userPhoto", userToSave.photo);
+   sessionStorage.setItem("userEmail", userToSave.email);
+   userToken = sessionStorage.getItem("userToken");
 }
 
 //************************Hide/Show SignIn and SignOut Buttons************************/
@@ -145,14 +138,13 @@ function showSignIn() {
 }
 
 function clearSessionStorageAndToken() {
+   showUserAsOffline(sessionStorage.getItem("userEmail"))
    sessionStorage.clear();
-   userToken = notLoggedInMessage()
+   userToken = null
    isUserLoggedIn()
+
 }
 
-function notLoggedInMessage() {
-   return "Not Logged In"
-}
 //************************************************/
 
 
@@ -163,11 +155,10 @@ function notLoggedInMessage() {
 $("#submit").click(function (e) {
    e.preventDefault();
    var userChatMessage = $("#userMessage").val().trim()
-   console.log(userChatMessage);
+   var time = moment().format('L, LT');
    if (userChatMessage) {
-      saveUserMessageToFirebase(userChatMessage)
+      saveUserMessageToFirebase(userChatMessage, time)
       $("#userMessage").val(" ")
-
    }
    else {
       alert("Please enter a chat message")
@@ -175,60 +166,155 @@ $("#submit").click(function (e) {
 
 });
 
-function saveUserMessageToFirebase(message) {
-   var userName = sessionStorage.getItem("user")
-   var photoLink = sessionStorage.getItem("userPhoto")
+function saveUserMessageToFirebase(message, time) {
+   var userName = sessionStorage.getItem("user");
+   var userPhotoLink = sessionStorage.getItem("userPhoto");
+   var email = sessionStorage.getItem("userEmail");
 
    database.ref("/messages").push({
-      chat: message,
-      photo: photoLink,
-      userWhoPostedThis: userName
+      message, userPhotoLink, email, userName,
+      time
    })
 }
 
 
+
 //************************Get and pushing EACH NEW Chat to DOM************************/
+function pushFBEntireDBValue() {
+   database.ref("/messages").once("value", function (snapShot) {
+      if (snapShot.val()) {
+         var dbSnapShot = Object.entries(snapShot.val())
+         dbSnapShot.forEach((snapShotEntry) => {
+            var entry = {
+               userMessage: snapShotEntry[1].message,
+               userPhotoURL: snapShotEntry[1].userPhotoLink,
+               userName: snapShotEntry[1].userName,
+               timeCreated: snapShotEntry[1].time,
+               email: snapShotEntry[1].email
+            }
+            dbDataDomFormatting(entry)
+         })
+      }
+   })
+}
 
-database.ref("/messages").on("child_added", function (childSnapShot, prevChildKey) {
-   console.log(prevChildKey);
-   console.log(childSnapShot.val());
-   var message = childSnapShot.val().chat
-   console.log(message);
-   var photoURL = childSnapShot.val().photo
-   console.log(photoURL);
+database.ref("/messages").limitToLast(1).on("child_added", function (snapShot) {
+         var entry = {
+            userMessage: snapShot.val().message,
+            userPhotoURL: snapShot.val().userPhotoLink,
+            userName: snapShot.val().userName,
+            timeCreated: snapShot.val().time,
+            email: snapShot.val().email
+         }
+      dbDataDomFormatting(entry)
+   })
 
-   var chatOwnersName = ""
-   if (!childSnapShot.val().userWhoPostedThis) {
-      chatOwnersName = "Anonymous wrote:"
-   } else {
-      chatOwnersName = childSnapShot.val().userWhoPostedThis += " wrote:"
-   }
+function dbDataDomFormatting({ userMessage, userPhotoURL, userName, timeCreated, email }) {
 
    var chatDiv = $("<div class='row'>")
    var photoCol = $("<div class='col-sm-2 photoMarginRight'>")
-
-
    chatDiv.addClass("divSpace mborder")
 
-   var messageCol = $("<div class='col-sm-9'>")
-   var messageName = $("<p>").text(chatOwnersName)
-   messageName.addClass("chatFont")
-   console.log(messageName);
-   var messageText = $("<p>").text(message)
-   messageCol.append(messageName, messageText)
-   // messageCol.addClass("messBorder")
+   var photoCol = $("<img>")
+   photoCol.attr("src", userPhotoURL);
+   photoCol.attr("alt", "User Photo");
+   photoCol.addClass("userPhotoSize");
+   photoCol.append(photoCol)
 
 
-   var userPhoto = $("<img>")
-   userPhoto.attr("src", photoURL);
-   userPhoto.attr("alt", "User Photo");
-   userPhoto.addClass("userPhotoSize");
-   photoCol.append(userPhoto)
+   var messageCol = $("<div class='col-sm-8'>")
+   var userName = $("<p>").text(userName)
+   userName.addClass("chatFont")
+   var messageText = $("<p>").text(userMessage);
+   var timeText = $("<p>").text(timeCreated);
+   timeText.addClass("timeFormat")
+   messageCol.append(userName, messageText, timeText);
+
+   // var timeCol = $("<div class='col-sm-2'>")
+   // timeCol.addClass("timeFormat")
+   // timeCol.text(timeCreated)
 
    chatDiv.append(photoCol, messageCol)
-
    $("#allChatTexts").prepend(chatDiv)
+}
 
 
-})
+function showUserAsLoggedOn() {
+   connectionsRef.once("value", function (snapshot) {
+   var fakeUserEmail = "none@gmail.com";
+      if (!snapshot.val()) {
+         con = connectionsRef.push({ user: "none", email: fakeUserEmail });
+         showUserAsLoggedOn()
+      }
+   var userToAdd = {
+      user: sessionStorage.getItem("user"),
+      email: sessionStorage.getItem("userEmail"),
+      photo: sessionStorage.getItem("userPhoto")
+   }
 
+      var userCon = Object.values(snapshot.val())
+      var emailsUsersCon = [];
+      userCon.forEach(user => {
+         emailsUsersCon.push(user.email)
+      });
+
+      if (emailsUsersCon.indexOf(userToAdd.email) === -1) {
+         con = connectionsRef.push(userToAdd);
+      }
+      showUserAsOffline(fakeUserEmail)
+
+   })
+   }
+
+function showUserAsOffline(email) {
+   connectionsRef.orderByChild("email").equalTo(email).once("value", function (snapshot) {
+      if (snapshot.val()) {
+         var keysToRemove = Object.keys(snapshot.val())
+         console.log(keysToRemove);
+         connectionsRef.child(keysToRemove[0]).remove();
+      }
+   });
+}
+
+
+
+connectionsRef.on("value", function (snapshot) {
+   $("#usersOnline").empty()
+   $("#usersOnlineSpan").text(snapshot.numChildren());
+
+   var snapShotOnline = Object.entries(snapshot.val())
+   var userArrayOnline = []
+
+   snapShotOnline.forEach((user,i) => {
+      userArrayOnline.push(user[1])
+   })
+   console.log(userArrayOnline);
+
+   userArrayOnline.forEach(user => {
+      dbUserOnlineDomFormatting(user)
+   })
+
+});
+
+
+function dbUserOnlineDomFormatting({ email, user, photo }) {
+
+   var onlineDiv = $("<div class='row'>")
+   onlineDiv.addClass("divSpace mborder")
+
+   var photoDiv = $("<div class='offset-md-2 col-sm-2 photoMarginRight'>")
+   var photoCol = $("<img>")
+   photoCol.attr("src", photo);
+   photoCol.attr("alt", "User Photo");
+   photoCol.addClass("userOnlinePhotoSize");
+   photoDiv.append(photoCol)
+
+   var nameCol = $("<div class='col-sm-8'>")
+   var userName = $("<p>").text(user)
+   userName.attr("data-name", email);
+
+   nameCol.append(userName);
+
+   onlineDiv.append(photoCol, nameCol)
+   $("#usersOnline").prepend(onlineDiv)
+}
