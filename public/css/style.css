@@ -35,6 +35,16 @@
 #allChatTexts {
 	overflow: auto;
 }
+
+#usersOnline {
+	overflow: auto;
+}
+
+#onlineBox {
+	min-height: 400px;
+	max-height: 500px;
+}
+
 .rowPos {
 	position: relative;
 }
@@ -55,6 +65,18 @@ input {
 	padding: 5px
 
 }
+
+.onlineBottomInputBorder {
+	height: 55px;
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-radius: 0px 0px 15px 15px;
+	background-color: lightgrey;
+	padding: 5px
+
+}
+
 
 .topInputBorder {
 	border-top: 1px solid black;
