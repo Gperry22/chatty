@@ -24,17 +24,14 @@
 </head>
 
 <body>
-
+<div class="jumbotron text-center">
+    <h1>CHATTY</h1>
+    <h3>Sign in to Chat with Classmates</h3>
+    <button id="signIn" onclick="googleSignIn()" class="btn btn-primary">Sign In</button>
+    <button id="signOut" onclick="googleSignOut()" class="btn btn-danger" style="display: none">Sign
+        Out</button>
+</div>
     <div class="container">
-        <div class="jumbotron text-center">
-            <h1>CHATTY</h1>
-            <h3>Sign in to Chat with Classmates</h3>
-            <button id="signIn" onclick="googleSignIn()" class="btn btn-primary">Sign In</button>
-            <button id="signOut" onclick="googleSignOut()" class="btn btn-danger" style="display: none">Sign
-                Out</button>
-
-        </div>
-
         <div id="chatBox1" style="display: none">
             <div class="row">
                 <div class="col-md-8">

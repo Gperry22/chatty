@@ -20,9 +20,7 @@ var connectionsRef = firebase.database().ref("/connections");
 var connectedRef = firebase.database().ref(".info/connected");
 var con;
 
-
 isUserLoggedIn()
-
 
 function isUserLoggedIn() {
    if (userToken === null) {
@@ -305,9 +303,7 @@ connectionsRef.on("value", function (snapshot) {
    userArrayOnline.forEach(user => {
       dbUserOnlineDomFormatting(user)
    })
-
 });
-
 
 function dbUserOnlineDomFormatting({ email, user, photo }) {
    var onlineDiv = $("<div class='row rowPos'>")
@@ -330,3 +326,5 @@ function dbUserOnlineDomFormatting({ email, user, photo }) {
    onlineDiv.append(photoDiv, nameCol)
    $("#usersOnline").prepend(onlineDiv)
 }
+
+
