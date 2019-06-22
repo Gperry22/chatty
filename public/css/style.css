@@ -14,6 +14,8 @@
 	height: 80px;
 	width: 80px;
 	border-radius: 50%;
+	position: absolute;
+	top: 20px
 }
 
 .userOnlinePhotoSize {
@@ -34,6 +36,7 @@
 
 #allChatTexts {
 	overflow: auto;
+	background-color: #f9feff;
 }
 
 #usersOnline {
@@ -52,7 +55,7 @@ input {
 	height: 50px;
 	border: 1px solid;
 	border-color: lightgrey;
-	border-radius: 15px 0px 0px 15px
+	border-radius: 0px 0px 15px 15px
 
 }
 
@@ -92,15 +95,20 @@ input {
 .subBTN {
 	height: 48px;
 	position: absolute;
-	right: 0px;
+	right: 15px;
 	bottom: 1px;
-	border-radius: 0px 15px 15px 0px;
+	border-radius: 0px 0px 15px 0px;
 
 }
 
 .mborder {
 	padding: 10px;
 	border-bottom: 1px gray solid;
+}
+.mborder1 {
+	padding: 10px;
+	border-bottom: 1px gray dashed;
+
 }
 
 .messBorder {
@@ -110,11 +118,44 @@ input {
 }
 
 .chatFont{
-	/* font-weight: bold; */
+	font-weight: bolder;
 	font-style: italic;
 }
 
 .timeFormat{
 	font-style: italic;
 	font-size: 12px;
+}
+.chatDivStyle{
+	background-color: #f7f7f7;
+
+}
+.messDivStyle {
+	/* border-radius: 5px 20px 5px;
+	border: 1px solid black; */
+	background-color: #f7f7f7;
+	padding-top: 5px
+}
+
+.onlineNamePos{
+	position: absolute;
+	top: 5px;
+}
+
+.editDeleteDivStyle {
+	border-left: 1px dashed black;
+	background-color: #f7f7f7;
+	padding-top: 5px
+}
+
+.faSize {
+	height: 15px;
+	width: 7px;
+	margin-bottom: 10px
+}
+
+.fa-trash-alt, .fa-trash-alt{
+	position: absolute;
+	bottom:15px;
+	right: 15px
 }

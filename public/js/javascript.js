@@ -190,7 +190,9 @@ function pushFBEntireDBValue() {
                userPhotoURL: snapShotEntry[1].userPhotoLink,
                userName: snapShotEntry[1].userName,
                timeCreated: snapShotEntry[1].time,
-               email: snapShotEntry[1].email
+               email: snapShotEntry[1].email,
+               key: snapShotEntry[0]
+
             }
             dbDataDomFormatting(entry)
          })
@@ -204,39 +206,52 @@ database.ref("/messages").limitToLast(1).on("child_added", function (snapShot) {
             userPhotoURL: snapShot.val().userPhotoLink,
             userName: snapShot.val().userName,
             timeCreated: snapShot.val().time,
-            email: snapShot.val().email
+            email: snapShot.val().email,
+            key: snapShot.key
          }
       dbDataDomFormatting(entry)
+})
+
+database.ref("/messages").on("child_removed", function () {
+   $("#allChatTexts").empty()
+   pushFBEntireDBValue()
    })
 
-function dbDataDomFormatting({ userMessage, userPhotoURL, userName, timeCreated, email }) {
-
-   var chatDiv = $("<div class='row'>")
+function dbDataDomFormatting({ userMessage, userPhotoURL, userName, timeCreated, email, key }) {
+   var chatDiv = $("<div class='row rowPos'>")
    var photoCol = $("<div class='col-sm-2 photoMarginRight'>")
-   chatDiv.addClass("divSpace mborder")
+   chatDiv.addClass("divSpace mborder1")
 
-   var photoCol = $("<img>")
-   photoCol.attr("src", userPhotoURL);
-   photoCol.attr("alt", "User Photo");
-   photoCol.addClass("userPhotoSize");
-   photoCol.append(photoCol)
+   var photoIMG = $("<img>")
+   photoIMG.attr("src", userPhotoURL);
+   photoIMG.attr("alt", "User Photo");
+   photoIMG.addClass("userPhotoSize");
+   photoCol.append(photoIMG)
 
-
-   var messageCol = $("<div class='col-sm-8'>")
-   var userName = $("<p>").text(userName)
-   userName.addClass("chatFont")
+   var messageCol = $("<div class='col-sm-9 rowPos messDivStyle'>")
+   var userNameDiv = $("<p>").text(userName)
+   userNameDiv.addClass("chatFont")
    var messageText = $("<p>").text(userMessage);
    var timeText = $("<p>").text(timeCreated);
    timeText.addClass("timeFormat")
-   messageCol.append(userName, messageText, timeText);
 
-   // var timeCol = $("<div class='col-sm-2'>")
-   // timeCol.addClass("timeFormat")
-   // timeCol.text(timeCreated)
+   if (userName === sessionStorage.getItem("user")) {
+      var editMess = $(" <i class='far fa-trash-alt '></i>")
+      editMess.attr("data-key", key);
+   messageCol.append(userNameDiv, messageText, timeText,editMess);
+   } else {
+   messageCol.append(userNameDiv, messageText, timeText);
+   }
 
    chatDiv.append(photoCol, messageCol)
    $("#allChatTexts").prepend(chatDiv)
 }
+
+$("#allChatTexts").on("click",".far", function (e) {
+   e.preventDefault();
+   var key =$(this).attr("data-key");
+   database.ref("/messages").child(key).remove()
+});
 
 
 function showUserAsLoggedOn() {
@@ -262,7 +277,6 @@ function showUserAsLoggedOn() {
          con = connectionsRef.push(userToAdd);
       }
       showUserAsOffline(fakeUserEmail)
-
    })
    }
 
@@ -275,8 +289,6 @@ function showUserAsOffline(email) {
       }
    });
 }
-
-
 
 connectionsRef.on("value", function (snapshot) {
    $("#usersOnline").empty()
@@ -298,23 +310,23 @@ connectionsRef.on("value", function (snapshot) {
 
 
 function dbUserOnlineDomFormatting({ email, user, photo }) {
-
-   var onlineDiv = $("<div class='row'>")
+   var onlineDiv = $("<div class='row rowPos'>")
    onlineDiv.addClass("divSpace mborder")
 
-   var photoDiv = $("<div class='offset-md-2 col-sm-2 photoMarginRight'>")
-   var photoCol = $("<img>")
-   photoCol.attr("src", photo);
-   photoCol.attr("alt", "User Photo");
-   photoCol.addClass("userOnlinePhotoSize");
-   photoDiv.append(photoCol)
+   var photoDiv = $("<div class='col-sm-2 photoMarginRight '>")
+   var photoIMG = $("<img>")
+   photoIMG.attr("src", photo);
+   photoIMG.attr("alt", "User Photo");
+   photoIMG.addClass("userOnlinePhotoSize");
+   photoDiv.append(photoIMG)
 
-   var nameCol = $("<div class='col-sm-8'>")
-   var userName = $("<p>").text(user)
+   var nameCol = $("<div class='col-sm-6'>")
+   var userName = $("<p>").text(user);
+   userName.addClass("onlineNamePos");
    userName.attr("data-name", email);
 
    nameCol.append(userName);
 
-   onlineDiv.append(photoCol, nameCol)
+   onlineDiv.append(photoDiv, nameCol)
    $("#usersOnline").prepend(onlineDiv)
 }
